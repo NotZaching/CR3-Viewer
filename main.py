@@ -22,6 +22,10 @@ class CR3Viewer:
         self.notebook = ttk.Notebook(self.root)
         self.notebook.pack(expand=True, fill='both')
 
+        self.root.bind("<Right>", self.switch_tab_right)
+        self.root.bind("<Left>", self.switch_tab_left)
+        self.root.bind("<Control-s>", self.save_image)
+
     def open_files(self):
         file_paths = filedialog.askopenfilenames(title="Select CR3 Files", filetypes=[("CR3 files", "*.cr3")])
         for file_path in file_paths:
@@ -42,7 +46,7 @@ class CR3Viewer:
         label.image = tkimage
         label.pack()
 
-    def save_image(self):
+    def save_image(self, event=None):
         current_tab_index = self.notebook.index(self.notebook.select())
         frame = self.notebook.nametowidget(self.notebook.select())
         file_path = self.notebook.tab(current_tab_index, "text")
@@ -54,6 +58,16 @@ class CR3Viewer:
                 rgb = raw.postprocess()
             imageio.imsave(save_path, rgb)
             print(f"Image saved as {save_path}")
+
+    def switch_tab_right(self, event):
+        current_tab_index = self.notebook.index(self.notebook.select())
+        next_tab_index = (current_tab_index + 1) % self.notebook.index("end")
+        self.notebook.select(next_tab_index)
+
+    def switch_tab_left(self, event):
+        current_tab_index = self.notebook.index(self.notebook.select())
+        prev_tab_index = (current_tab_index - 1) % self.notebook.index("end")
+        self.notebook.select(prev_tab_index)
 
 if __name__ == "__main__":
     viewer = CR3Viewer()
