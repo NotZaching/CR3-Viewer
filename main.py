@@ -1,4 +1,5 @@
-from tkinter import Tk, filedialog, Frame, Button, Label
+from tkinterdnd2 import DND_FILES, TkinterDnD
+from tkinter import filedialog, Frame, Button, Label
 from tkinter import ttk
 from PIL import Image, ImageTk
 import os
@@ -7,7 +8,7 @@ import imageio
 
 class CR3Viewer:
     def __init__(self):
-        self.root = Tk()
+        self.root = TkinterDnD.Tk()
         self.root.title("CR3 Viewer")
 
         self.top_frame = Frame(self.root)
@@ -19,6 +20,10 @@ class CR3Viewer:
         self.save_button = Button(self.top_frame, text="Save", command=self.save_image)
         self.save_button.pack(side="left")
 
+        # Add a close button to the top frame
+        self.close_button = Button(self.top_frame, text="Close", command=self.close_current_tab)
+        self.close_button.pack(side="left")
+
         self.notebook = ttk.Notebook(self.root)
         self.notebook.pack(expand=True, fill='both')
 
@@ -26,8 +31,13 @@ class CR3Viewer:
         self.root.bind("<Left>", self.switch_tab_left)
         self.root.bind("<Control-s>", self.save_image)
 
-    def open_files(self):
-        file_paths = filedialog.askopenfilenames(title="Select CR3 Files", filetypes=[("CR3 files", "*.cr3")])
+        # Enable drag and drop
+        self.root.drop_target_register(DND_FILES)
+        self.root.dnd_bind('<<Drop>>', self.on_drop)
+
+    def open_files(self, file_paths=None):
+        if file_paths is None:
+            file_paths = filedialog.askopenfilenames(title="Select CR3 Files", filetypes=[("CR3 files", "*.cr3")])
         for file_path in file_paths:
             self.add_tab(file_path)
 
@@ -68,6 +78,16 @@ class CR3Viewer:
         current_tab_index = self.notebook.index(self.notebook.select())
         prev_tab_index = (current_tab_index - 1) % self.notebook.index("end")
         self.notebook.select(prev_tab_index)
+
+    def on_drop(self, event):
+        file_paths = self.root.tk.splitlist(event.data)
+        self.open_files(file_paths)
+
+    def close_current_tab(self):
+        """Closes the currently selected tab in the notebook."""
+        current_tab = self.notebook.select()
+        if current_tab:
+            self.notebook.forget(current_tab)
 
 if __name__ == "__main__":
     viewer = CR3Viewer()
