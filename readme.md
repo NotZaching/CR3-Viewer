@@ -15,13 +15,14 @@ To run CR3 Viewer, you need Python installed on your system along with the follo
 - PIL (Pillow)
 - rawpy
 - imageio
+- tkinterdnd2
 
 ## Installation
 
 1. Ensure you have Python installed on your system.
 2. Install the required Python packages using pip:
 
-pip install Pillow rawpy imageio
+pip install Pillow rawpy imageio tkinterdnd2
 
 ## Usage
 
