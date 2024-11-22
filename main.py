@@ -20,7 +20,6 @@ class CR3Viewer:
         self.save_button = Button(self.top_frame, text="Save", command=self.save_image)
         self.save_button.pack(side="left")
 
-        # Add a close button to the top frame
         self.close_button = Button(self.top_frame, text="Close", command=self.close_current_tab)
         self.close_button.pack(side="left")
 
@@ -31,7 +30,6 @@ class CR3Viewer:
         self.root.bind("<Left>", self.switch_tab_left)
         self.root.bind("<Control-s>", self.save_image)
 
-        # Enable drag and drop
         self.root.drop_target_register(DND_FILES)
         self.root.dnd_bind('<<Drop>>', self.on_drop)
 
